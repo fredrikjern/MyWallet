@@ -1,7 +1,7 @@
 function Footer() {
   return (
-    <footer className="bg-green-600 p-3">
-      <h1>Copywright Fredrik Jernberg 2023</h1>
+    <footer className="flex justify-end p-3">
+      <h1 className="text-sm">Copywright Fredrik Jernberg 2023</h1>
     </footer >
   );
 }

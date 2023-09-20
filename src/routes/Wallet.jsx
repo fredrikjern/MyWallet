@@ -2,6 +2,8 @@ import CardList from "../features/CardList";
 import { addCard } from "../features/cardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 
 export function Wallet() {
   const fullName = useSelector((state) => state.name);
@@ -9,7 +11,6 @@ export function Wallet() {
 
   useEffect(() => {
     if (allCards.cards.length < 1) {
-      //cardType, cardNumber, name, expireDate, cvv
       dispatch(
         addCard({
           cardType: "Visa",
@@ -44,15 +45,29 @@ export function Wallet() {
   }, []);
 
   const allCards = useSelector((state) => state.cards);
-  console.log(allCards.cards.length, "allCards");
+
   return (
-    <section className="p-4 flex flex-col justify-center">
-      {fullName === "" && <p>Loading...</p>}
-      {allCards.cards.length > 0 && (
-        <>
-          <CardList cards={allCards} />
-        </>
-      )}
-    </section>
+    <>
+      <header className="flex justify-center p-4">
+        <h1 className="text-2xl">E-wallet</h1>
+      </header>
+      <section className="p-4 flex flex-col justify-center overflow-hidden ">
+        {fullName === "" && <p>Loading...</p>}
+        {allCards.cards.length > 0 && (
+          <>
+            <CardList cards={allCards} />
+          </>
+        )}
+        {allCards.cards.length < 4 && (
+          <Link
+            className="p-2 rounded w-full hover:bg-slate-700 flex justify-center border"
+            to="/addCard"
+          >
+            Add a new card
+          </Link>
+        )}
+      </section>
+      <section className="flex justify-center p-2"></section>
+    </>
   );
 }

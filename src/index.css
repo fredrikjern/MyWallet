@@ -4,3 +4,22 @@
 .active {
     outline: 1px solid red;
 }
+/* .stacked-div {
+    position: relative;
+
+} */
+
+/* Adjust top value for spacing between stacked divs */
+
+
+.stacked-div:nth-child(2) {
+    margin-top: 20px;
+}
+.stacked-div:nth-child(3) {
+    margin-top: -170px;
+}
+
+.stacked-div:nth-child(4) {
+    top: -300px;
+}
+

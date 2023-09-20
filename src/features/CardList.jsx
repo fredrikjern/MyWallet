@@ -32,7 +32,6 @@ function CardList({ cards }) {
           <Card
             key={index}
             data={item}
-            index={index}
             handleDelete={handleDelete}
             isActive={index === 0}
             onClick={() => handleCardClick(index)}
