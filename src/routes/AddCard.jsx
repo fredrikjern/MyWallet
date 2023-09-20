@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addCard } from "../features/cardSlice";
 
-// Define the chip SVG as a string
+
 const chipSVG = `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="32" height="32">
     <!-- Outer circle -->
@@ -46,9 +46,9 @@ const AddCard = () => {
     const inputCardNumber = event.target.value;
     if (inputCardNumber.length > 0) {
       const formattedCardNumber = inputCardNumber
-        .replace(/\s/g, "") // Remove existing spaces
-        .match(/.{1,4}/g) // Create groups of 4 characters
-        .join(" "); // Add space between groups
+        .replace(/\s/g, "") 
+        .match(/.{1,4}/g) 
+        .join(" "); 
       setCardNumber(formattedCardNumber);
     }
     if (inputCardNumber.length === 0) {
@@ -83,7 +83,7 @@ const AddCard = () => {
         cardType: cardType,
         name: fullName,
         cvv: cvv,
-        cardNumber: cardNumber.replace(/\s/g, ""), // Remove spaces for storage
+        cardNumber: cardNumber.replace(/\s/g, ""),
         active: false,
         expireDate: expireDate,
         name: title+" "+firstName +" "+lastName,
