@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-
 export function Wallet() {
   const fullName = useSelector((state) => state.name);
   const dispatch = useDispatch();
@@ -23,7 +22,7 @@ export function Wallet() {
       );
       dispatch(
         addCard({
-          cardType: "Mastercard",
+          cardType: "MasterCard",
           name: fullName,
           cvv: 123,
           cardNumber: "73300 02220 0000 4222",
@@ -33,7 +32,7 @@ export function Wallet() {
       );
       dispatch(
         addCard({
-          cardType: "American X",
+          cardType: "American Express",
           name: fullName,
           cvv: 123,
           cardNumber: "33300 02220 0000 4222",
@@ -49,17 +48,15 @@ export function Wallet() {
   return (
     <>
       <header className="flex justify-center p-4">
-        <h1 className="text-2xl">E-wallet</h1>
+        <h1 className="text-2xl font-bold">E-wallet</h1>
       </header>
-      <section className="p-4 flex flex-col justify-center overflow-hidden ">
-        {fullName === "" && <p>Loading...</p>}
+      <section className="p-4 flex flex-col justify-center ">
+        {allCards.cards.length===0 && <p>Loading...</p> }
         {allCards.cards.length > 0 && (
-          <>
-            <CardList cards={allCards} />
-          </>
+          <CardList cards={allCards.cards} />
         )}
         {allCards.cards.length < 4 && (
-          <Link
+          <Link onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" })}}
             className="p-2 rounded w-full hover:bg-slate-700 flex justify-center border"
             to="/addCard"
           >
@@ -67,7 +64,6 @@ export function Wallet() {
           </Link>
         )}
       </section>
-      <section className="flex justify-center p-2"></section>
     </>
   );
 }

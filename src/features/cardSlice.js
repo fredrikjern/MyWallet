@@ -25,13 +25,13 @@ const cardsSlice = createSlice({
         cards: action.payload,
       };
     },
-    deleteCard: (state, action) => {
-console.log(action.payload);
-      return {
-        // ...state,
-        // cards: action.payload,
-      };
-    },
+//     deleteCard: (state, action) => {
+// console.log(action.payload);
+//       return {
+//         // ...state,
+//         // cards: action.payload,
+//       };
+//     },
   },
   // extraReducers: {
   //   [getRandomUser.fulfilled]: (state, action) => {
@@ -41,5 +41,5 @@ console.log(action.payload);
 });
 
 export default cardsSlice.reducer;
-export const { addCard,reorderCards } = cardsSlice.actions;
+export const { addCard,reorderCards,deleteCard } = cardsSlice.actions;
 

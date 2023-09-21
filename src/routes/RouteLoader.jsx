@@ -6,6 +6,7 @@ import {
   RouterProvider,
   Route,
 } from "react-router-dom";
+
 import { Wallet } from "../routes/Wallet";
 import Root from "../routes/Root";
 import AddCard from "../routes/AddCard";
@@ -21,7 +22,6 @@ export const RouteLoader = () => {
           index
           element={<Wallet />}
           loader={async () => {
-            console.log("pageLoader");
             if (fullName === "") return dispatch(getRandomUser());
             // Denna kan bara köras inne i en React component
             return false;

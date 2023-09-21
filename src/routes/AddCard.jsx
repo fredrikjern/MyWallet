@@ -1,54 +1,66 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addCard } from "../features/cardSlice";
+import { useNavigate } from "react-router-dom";
 
+export const chipSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
+</svg>
 
-const chipSVG = `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="32" height="32">
-    <!-- Outer circle -->
-    <circle cx="24" cy="24" r="18" fill="#ccc" />
-    <!-- Inner rectangle -->
-    <rect x="12" y="16" width="24" height="16" fill="#fff" />
-    <!-- Embossed effect lines -->
-    <line x1="12" y1="20" x2="36" y2="20" stroke="#aaa" stroke-width="2" />
-    <line x1="12" y1="28" x2="36" y2="28" stroke="#aaa" stroke-width="2" />
-  </svg>
 `;
 
 const AddCard = () => {
-    const fullName = useSelector((state) => state.name);
-    const words = fullName.split(" ");
-    let initialTitle = "";
-    let initialFirstName = "";
-    let initialLastName = "";
+  const navigate = useNavigate();
 
-    if (words.length === 3) {
-      [initialTitle, initialFirstName, initialLastName] = words;
+  const fullName = useSelector((state) => state.name);
+  const words = fullName.split(" ");
+  let initialTitle = "";
+  let initialFirstName = "";
+  let initialLastName = "";
 
-    } else {
-      console.log("Invalid input format");
-    }
+  if (words.length === 3) {
+    [initialTitle, initialFirstName, initialLastName] = words;
+  } else {
+    console.log("Invalid input format");
+  }
 
   const dispatch = useDispatch();
   const [cardType, setCardType] = useState("Visa");
   const [cardNumber, setCardNumber] = useState("**** **** **** ****");
-  const [expireDate, setExpireDate] = useState("YY/MM");
+  const [expireMonth, setExpireMonth] = useState("MM");
+  const [expireYear, setExpireYear] = useState("YY");
   const [cvv, setCvv] = useState("***");
   const [title, setTitle] = useState(initialTitle);
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
-
+  const [displayName, setDisplayName] = useState("");
+ function hasLetters(inputString) {
+   for (let i = 0; i < inputString.length; i++) {
+     if (/[a-zA-Z]/.test(inputString[i])) {
+       return true;
+     }
+   }
+   return false;
+ }
   const handleCardTypeChange = (event) => {
     setCardType(event.target.value);
   };
 
   const handleCardNumberChange = (event) => {
-    const inputCardNumber = event.target.value;
+      const inputCardNumber = event.target.value;
+      if (hasLetters(inputCardNumber)) {
+        return
+      }
+      if (inputCardNumber>19) return
     if (inputCardNumber.length > 0) {
       const formattedCardNumber = inputCardNumber
-        .replace(/\s/g, "") 
-        .match(/.{1,4}/g) 
-        .join(" "); 
+        .replace(/\s/g, "")
+        .match(/.{1,4}/g)
+        .join(" ");
       setCardNumber(formattedCardNumber);
     }
     if (inputCardNumber.length === 0) {
@@ -56,8 +68,11 @@ const AddCard = () => {
     }
   };
 
-  const handleExpireDateChange = (event) => {
-    setExpireDate(event.target.value);
+  const handleExpireMonthChange = (event) => {
+    setExpireMonth(event.target.value);
+  };
+  const handleExpireYearChange = (event) => {
+    setExpireYear(event.target.value);
   };
 
   const handleCvvChange = (event) => {
@@ -78,131 +93,207 @@ const AddCard = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    let newName = title + " " + firstName + " " + lastName;
     dispatch(
       addCard({
         cardType: cardType,
-        name: fullName,
         cvv: cvv,
         cardNumber: cardNumber.replace(/\s/g, ""),
         active: false,
-        expireDate: expireDate,
-        name: title+" "+firstName +" "+lastName,
-          title: title,
-        firstName: firstName,
-        lastName: lastName,
+        expireMonth: expireMonth,
+        expireYear: expireYear,
+        name: newName,
       })
     );
-    event.target.reset();
+
+    navigate("/");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col items-center">
-      <div className={`bg-white p-4 rounded-lg shadow-md mb-4 w-72`}>
-        <div className="w-full h-32 mb-2 relative rounded-md flex flex-col justify-between items-center bg-gray-500">
+    <>
+      <header className="flex justify-center p-4">
+        <h1 className="text-2xl font-bold">Add a new Card</h1>
+      </header>
+      <main className="flex flex-grow">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col flex-grow items-center "
+        >
           <div
-            dangerouslySetInnerHTML={{ __html: chipSVG }}
-            className="absolute w-8 h-8 top-8 left-4"
-          />
-          <div className="text-white p-4 text-center">
-            <div className="text-lg font-bold">{cardNumber}</div>
-            <div className="text-lg mt-2">{cardType}</div>
-            <div className="flex flex-start justify-between w-full px-4 mt-2 text-xs font-bold flex-col border-2">
-              <div className="flex-start">
-                {title} {firstName} {lastName}
+            className={`bg-white p-4 rounded-lg shadow-md mb-4 border-2 border-slate-500 `}
+          >
+            <div className=" flex-grow ">
+              <div
+                className={`p-2 rounded-lg flex flex-col border border-slate-800 mb-6
+        ${cardType === "Visa" ? "bg-green-800" : ""} 
+        ${cardType === "MasterCard" ? "bg-yellow-800" : ""}
+        ${cardType === "American Express" ? "bg-slate-800" : ""}
+        `}
+              >
+                <div className="flex justify-between px-2">
+                  <div
+                    dangerouslySetInnerHTML={{ __html: chipSVG }}
+                    className=" w-8 h-8 top-8 left-4"
+                  />
+                  <div className=" text-white text-3xl font-bold">
+                    {cardType}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold text-white text-lg mt-8">
+                    {cardNumber}
+                  </div>
+                </div>
+
+                <div className="flex justify-between">
+                  <div className="">
+                    <div className="font-semibold text-white text-sm">
+                      Valid through:
+                    </div>
+                    <div className="font-semibold text-white text-lg">
+                      {expireMonth} / {expireYear}
+                    </div>
+                  </div>
+                  <div className="">
+                    <div className="font-semibold text-white text-sm px-1">
+                      CVV
+                    </div>
+                    <div className="font-semibold text-white text-lg bg-white hover:bg-slate-600 rounded-full px-1">
+                      {cvv}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold text-white text-sm">
+                    Cardholder
+                  </div>
+                  <div className="font-semibold text-white text-lg">
+                    {title.toUpperCase()} {firstName.toUpperCase()}{" "}
+                    {lastName.toUpperCase()}
+                  </div>
+                </div>
               </div>
-                          <div>Expire Date: {expireDate}</div>
-                          
             </div>
+            {/*  */}
+            <div className="p-2 flex gap-8">
+              <div className="mb-4 flex flex-col justify-between ">
+                <label className=" font-bold">Card Type</label>
+                <select
+                  className="border border-gray-300 p-2 rounded-md"
+                  value={cardType}
+                  onChange={handleCardTypeChange}
+                >
+                  <option value="Visa">Visa</option>
+                  <option value="MasterCard">MasterCard</option>
+                  <option value="American Express">American Express</option>
+                </select>
+              </div>
+
+              <div className="mb-4 flex flex-col justify-between">
+                <label className="font-bold">Card Number</label>
+                <input
+                  type="text"
+                  className="border border-gray-300 p-2 rounded-md"
+                  placeholder="Card Number"
+                  value={cardNumber}
+                  onChange={handleCardNumberChange}
+                  maxLength={19}
+                />
+              </div>
+            </div>
+            {/*  */}
+            <div className="flex  flex-grow-0 px-2 ">
+              <div>
+                <h1 className="font-bold">Valid through</h1>
+                <div className="flex gap-8">
+                  <div className="mb-4 flex flex-col">
+                    <label className="">Month</label>
+                    <input
+                      type="number"
+                      className="border border-gray-300 p-2 rounded-md"
+                      placeholder="MM"
+                      value={expireMonth}
+                      max="12"
+                      min="0"
+                      onChange={handleExpireMonthChange}
+                    />
+                  </div>
+                  <div className=" flex justify-center">
+                    <p className="align-center font-bold text-2xl m-auto">/</p>
+                  </div>
+                  <div className="mb-4 flex flex-col">
+                    <label className="">Year</label>
+                    <input
+                      type="number"
+                      className="border border-gray-300 p-2 rounded-md"
+                      placeholder="YY"
+                      value={expireYear}
+                      max="28"
+                      min="23"
+                      onChange={handleExpireYearChange}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/*  */}
+            <div className="flex px-2 gap-8">
+              <div className="mb-4 flex flex-col">
+                <label className="font-bold">CVV</label>
+                <input
+                  type="text"
+                  className="border border-gray-300 p-2 rounded-md"
+                  placeholder="***"
+                                  value={cvv}
+                                  maxLength={3}
+                  onChange={handleCvvChange}
+                />
+              </div>
+              <div className="mb-4 flex flex-col">
+                <label className="font-bold">Title</label>
+                <select
+                  className="border border-gray-300 p-2 rounded-md"
+                  value={title}
+                  onChange={handleTitleChange}
+                >
+                  <option value=""> </option>
+                  <option value="Mr">Mr</option>
+                  <option value="Ms">Ms</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="font-bold">First Name</label>
+              <input
+                type="text"
+                className="border border-gray-300 p-2 rounded-md"
+                value={firstName}
+                              onChange={handleFirstNameChange}
+                              readOnly
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="font-bold">Last Name</label>
+              <input
+                type="text"
+                className="border border-gray-300 p-2 rounded-md"
+                value={lastName}
+                              onChange={handleLastNameChange}
+                              disabled
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-2 px-4 w-full rounded-md hover:bg-blue-600"
+            >
+              Submit
+            </button>
           </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="text-lg font-bold">Card Type</label>
-          <select
-            className="border border-gray-300 p-2 rounded-md"
-            value={cardType}
-            onChange={handleCardTypeChange}
-          >
-            <option value="Visa">Visa</option>
-            <option value="MasterCard">MasterCard</option>
-            <option value="American Express">American Express</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="text-lg font-bold">Card Number</label>
-          <input
-            type="text"
-            className="border border-gray-300 p-2 rounded-md"
-            placeholder="Card Number"
-            value={cardNumber}
-            onChange={handleCardNumberChange}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="text-lg font-bold">Expire Date</label>
-          <input
-            type="text"
-            className="border border-gray-300 p-2 rounded-md"
-            placeholder="YY/MM"
-            value={expireDate}
-            onChange={handleExpireDateChange}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="text-lg font-bold">CVV</label>
-          <input
-            type="text"
-            className="border border-gray-300 p-2 rounded-md"
-            placeholder="***"
-            value={cvv}
-            onChange={handleCvvChange}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="text-lg font-bold">Title</label>
-          <select
-            className="border border-gray-300 p-2 rounded-md"
-            value={title}
-            onChange={handleTitleChange}
-          >
-            <option value=""> </option>
-            <option value="Mr">Mr</option>
-            <option value="Ms">Ms</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="text-lg font-bold">First Name</label>
-          <input
-            type="text"
-            className="border border-gray-300 p-2 rounded-md"
-            value={firstName}
-            onChange={handleFirstNameChange}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="text-lg font-bold">Last Name</label>
-          <input
-            type="text"
-            className="border border-gray-300 p-2 rounded-md"
-            value={lastName}
-            onChange={handleLastNameChange}
-          />
-        </div>
-      </div>
-
-      <button
-        type="submit"
-        className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-      >
-        Submit
-      </button>
-    </form>
+        </form>
+      </main>
+    </>
   );
 };
 
