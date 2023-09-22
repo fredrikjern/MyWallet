@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addCard } from "../features/cardSlice";
 import { useNavigate } from "react-router-dom";
-
+import  dateSelectComp  from "../components/dateSelectComp";
 export const chipSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
@@ -38,33 +38,39 @@ const AddCard = () => {
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
   const [displayName, setDisplayName] = useState("");
- function hasLetters(inputString) {
-   for (let i = 0; i < inputString.length; i++) {
-     if (/[a-zA-Z]/.test(inputString[i])) {
-       return true;
-     }
-   }
-   return false;
- }
+  function hasLetters(inputString) {
+    for (let i = 0; i < inputString.length; i++) {
+      if (/[a-zA-Z]/.test(inputString[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
   const handleCardTypeChange = (event) => {
     setCardType(event.target.value);
   };
 
   const handleCardNumberChange = (event) => {
-      const inputCardNumber = event.target.value;
-      if (hasLetters(inputCardNumber)) {
-        return
-      }
-      if (inputCardNumber>19) return
+    const inputCardNumber = event.target.value;
+    if (inputCardNumber.length === 0) {
+      setCardNumber("");
+    }
+    if (inputCardNumber.length > 19) {
+      console.log("Längre än 19 tecken");
+      return;
+    }
+    if (hasLetters(inputCardNumber)) {
+      console.log("Har bokstäver i sig ", inputCardNumber);
+      return;
+    }
+
     if (inputCardNumber.length > 0) {
+      console.log(" större än 0");
       const formattedCardNumber = inputCardNumber
         .replace(/\s/g, "")
         .match(/.{1,4}/g)
         .join(" ");
       setCardNumber(formattedCardNumber);
-    }
-    if (inputCardNumber.length === 0) {
-      setCardNumber("");
     }
   };
 
@@ -196,13 +202,17 @@ const AddCard = () => {
                   className="border border-gray-300 p-2 rounded-md"
                   placeholder="Card Number"
                   value={cardNumber}
+                  onClick={() => {
+                    if (cardNumber.indexOf("*") !== -1) {
+                      setCardNumber("");
+                    }
+                  }}
                   onChange={handleCardNumberChange}
-                  maxLength={19}
                 />
               </div>
             </div>
             {/*  */}
-            <div className="flex  flex-grow-0 px-2 ">
+            {/* <div className="flex  flex-grow-0 px-2 ">
               <div>
                 <h1 className="font-bold">Valid through</h1>
                 <div className="flex gap-8">
@@ -235,7 +245,9 @@ const AddCard = () => {
                   </div>
                 </div>
               </div>
-            </div>
+              
+            </div> */}
+            {dateSelectComp()}
             {/*  */}
             <div className="flex px-2 gap-8">
               <div className="mb-4 flex flex-col">
@@ -244,8 +256,8 @@ const AddCard = () => {
                   type="text"
                   className="border border-gray-300 p-2 rounded-md"
                   placeholder="***"
-                                  value={cvv}
-                                  maxLength={3}
+                  value={cvv}
+                  maxLength={3}
                   onChange={handleCvvChange}
                 />
               </div>
@@ -269,8 +281,8 @@ const AddCard = () => {
                 type="text"
                 className="border border-gray-300 p-2 rounded-md"
                 value={firstName}
-                              onChange={handleFirstNameChange}
-                              readOnly
+                onChange={handleFirstNameChange}
+                readOnly
               />
             </div>
 
@@ -280,8 +292,8 @@ const AddCard = () => {
                 type="text"
                 className="border border-gray-300 p-2 rounded-md"
                 value={lastName}
-                              onChange={handleLastNameChange}
-                              disabled
+                onChange={handleLastNameChange}
+                disabled
               />
             </div>
             <button
