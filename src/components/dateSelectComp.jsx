@@ -7,8 +7,12 @@ function DateSelectComp() {
   const formattedDate = date.toString().split("T")[0];
 
   return (
-    <div>
-      <DateSelect value={date} onChange={setDate} hideDay />
+    <div className="flex flex-col p-2 gap-2">
+
+      <h2 className="font-bold">Valid Through</h2>
+      <div>
+        <DateSelect value={date} onChange={setDate} hideDay />
+      </div>
       <p>Selected date is: {formattedDate}</p>
     </div>
   );

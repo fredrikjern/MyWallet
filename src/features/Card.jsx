@@ -10,10 +10,6 @@ const Card = ({ data, isActive, onClick, handleDelete, index }) => {
   useEffect(() => {
     setShowDelete(false);
   }, [data]);
-  useEffect(() => {
-    console.log("mount");
-    return console.log("unmount");
-  }, []);
 
   function toggleDelete(e) {
     e.preventDefault();
@@ -21,7 +17,7 @@ const Card = ({ data, isActive, onClick, handleDelete, index }) => {
     setShowDelete((prevShowDelete) => !prevShowDelete);
   }
   return (
-    <li className="stacked-div flex flex-grow ">
+    <li className="stacked-div flex">
       <div
         onClick={onClick}
         className={`${
@@ -49,9 +45,11 @@ const Card = ({ data, isActive, onClick, handleDelete, index }) => {
 
         <div className="flex justify-between">
           <div className="">
-            <div className="font-semibold text-white text-sm">Expires</div>
+            <div className="font-semibold text-white text-sm">
+              Valid through
+            </div>
             <div className="font-semibold text-white text-lg">
-              {data.expireDate}
+              {data.expireMonth} / {data.expireYear}
             </div>
           </div>
           <div className="">
@@ -64,22 +62,21 @@ const Card = ({ data, isActive, onClick, handleDelete, index }) => {
         <div>
           <div className="font-semibold text-white text-sm">Cardholder</div>
           <div className="font-semibold text-white text-lg">
-            {data.name.toUpperCase()}
+            {data.name !== "" && data.name.toUpperCase()}
           </div>
         </div>
       </div>
-      {console.log(isActive)}
       {!isActive && (
         <div className=" absolute z-50  border-2  flex -translate-x-8 justify-center rounded transition ease-in-out delay-50  hover:bg-red-200 hover:z-50 duration-200 ">
           <button onClick={toggleDelete} className=" rounded-md px-1">
-            X {console.log("inne")}
+            X
           </button>
           {showDelete && (
             <button
               onClick={() => {
                 handleDelete(index);
               }}
-              className="bg-blue-300 p-1 px-4 rounded-full border-transparent hover:border-red-400 hover:bg-red-200"
+              className="bg-slate-300 opacity-75 p-1 px-4 rounded-full border-transparent hover:border-red-400 hover:bg-red-200"
             >
               Delete
             </button>

@@ -4,10 +4,6 @@
 
 
 .stacked-div:nth-child(2) {
-    width: 352px;
-}
-
-.stacked-div:nth-child(2) {
     margin-top: 20px;
 }
 .stacked-div:nth-child(3) {

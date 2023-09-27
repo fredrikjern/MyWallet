@@ -16,8 +16,8 @@ export function Wallet() {
           name: fullName,
           cvv: 123,
           cardNumber: "33300 02220 0000 4222",
-          active: true,
-          expireDate: "02/24",
+          expireYear: "24",
+          expireMonth: "12",
         })
       );
       dispatch(
@@ -26,8 +26,8 @@ export function Wallet() {
           name: fullName,
           cvv: 123,
           cardNumber: "73300 02220 0000 4222",
-          active: true,
-          expireDate: "02/24",
+          expireYear: "24",
+          expireMonth: "12",
         })
       );
       dispatch(
@@ -36,8 +36,8 @@ export function Wallet() {
           name: fullName,
           cvv: 123,
           cardNumber: "33300 02220 0000 4222",
-          active: true,
-          expireDate: "02/24",
+          expireYear: "24",
+          expireMonth: "12",
         })
       );
     }
@@ -51,13 +51,14 @@ export function Wallet() {
         <h1 className="text-2xl font-bold">E-wallet</h1>
       </header>
       <section className="p-4 flex flex-col justify-center ">
-        {allCards.cards.length===0 && <p>Loading...</p> }
-        {allCards.cards.length > 0 && (
-          <CardList cards={allCards.cards} />
-        )}
+        {allCards.cards.length === 0 && <p>Loading...</p>}
+        {allCards.cards.length > 0 && <CardList cards={allCards.cards} />}
         {allCards.cards.length < 4 && (
-          <Link onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" })}}
-            className="p-2 rounded w-full hover:bg-slate-700 flex justify-center border"
+          <Link
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="p-2 rounded w-full hover:bg-slate-700 flex justify-center border  min-w-xl max-w-xl m-auto"
             to="/addCard"
           >
             Add a new card

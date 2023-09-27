@@ -1,9 +1,8 @@
 import Card from "./Card";
 import { useDispatch } from "react-redux";
-import { reorderCards, deleteCard } from "../features/cardSlice";
+import { reorderCards } from "../features/cardSlice";
 
 function CardList({ cards }) {
-
   const dispatch = useDispatch();
 
   if (!Array.isArray(cards)) {
@@ -13,15 +12,14 @@ function CardList({ cards }) {
 
   const reorderedCardsArray = [...cards];
   const handleDelete = (index) => {
-    reorderedCardsArray.splice(index,1)
-     dispatch(reorderCards(reorderedCardsArray));
+    reorderedCardsArray.splice(index, 1);
+    dispatch(reorderCards(reorderedCardsArray));
   };
   const handleCardClick = (index) => {
     if (index !== 0) {
-      console.log("HandleCardClick");
       const activeCard = reorderedCardsArray.splice(index, 1);
       reorderedCardsArray.unshift(activeCard[0]);
-      console.log(reorderedCardsArray);
+
       dispatch(reorderCards(reorderedCardsArray));
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -29,7 +27,7 @@ function CardList({ cards }) {
 
   return (
     <main className="flex justify-center">
-      <ul className="border-4 flex-grow flex flex-col justify-center p-2 px-16">
+      <ul className="border-4 flex-grow flex flex-col justify-center p-2 px-16  min-w-xl max-w-xl">
         {reorderedCardsArray.map((item, index) => (
           <Card
             key={index}
